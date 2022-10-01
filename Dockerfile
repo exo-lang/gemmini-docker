@@ -1,8 +1,9 @@
 FROM ubuntu:20.04
 
-COPY chipyard.diff /root
-COPY install.sh /root
+WORKDIR /root
+COPY chipyard.diff .
+COPY install.sh .
 
-ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=US
-RUN /root/install.sh
+RUN ./install.sh
