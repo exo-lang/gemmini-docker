@@ -6,14 +6,13 @@ apt-get -y upgrade
 apt-get install -y build-essential bison flex software-properties-common curl \
                    libgmp-dev libmpfr-dev libmpc-dev zlib1g-dev vim default-jdk default-jre \
                    texinfo gengetopt libexpat1-dev libusb-dev libncurses5-dev cmake git \
-                   device-tree-compiler python
+                   device-tree-compiler python gawk autoconf
 
 # Install chipyard
 git clone https://github.com/ucb-bar/chipyard.git
 cd chipyard
 git checkout 76b747dc846706e898090960b9bcb2c3105e9b81
 
-./scripts/init-submodules-no-riscv-tools.sh
 ./scripts/build-toolchains.sh esp-tools --ignore-qemu
 cd toolchains/esp-tools/riscv-isa-sim
 patch -p1 < ~/chipyard.diff
@@ -50,6 +49,6 @@ git checkout exo
 git submodule update --init --recursive
 ./build.sh
 
-#cd build/bareMetalC
-#spike --extension=gemmini tiled_matmul_ws-baremetal
-
+cd build/bareMetalC
+spike --extension=gemmini tiled_matmul_ws-baremetal
+spike --extension=gemmini conv-baremetal
