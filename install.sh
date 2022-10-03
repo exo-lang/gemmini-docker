@@ -51,4 +51,11 @@ git submodule update --init --recursive
 
 cd build/bareMetalC
 spike --extension=gemmini tiled_matmul_ws-baremetal
+spike --extension=gemmini tiled_matmul_ws-2-baremetal
+spike --extension=gemmini tiled_matmul_ws-3-baremetal
+spike --extension=gemmini tiled_matmul_ws-4-baremetal
+spike --extension=gemmini tiled_matmul_ws-5-baremetal
+spike --extension=gemmini tiled_matmul_ws-6-baremetal
 spike --extension=gemmini conv-baremetal
+spike --extension=gemmini conv-2-baremetal
+spike --extension=gemmini conv-3-baremetal
