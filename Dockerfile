@@ -1,32 +1,38 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 WORKDIR /root
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=US
 
+SHELL ["/bin/bash", "-c"]
+
 RUN apt-get -y update && \
-    apt-get install -y build-essential bison flex software-properties-common curl \
-      libgmp-dev libmpfr-dev libmpc-dev zlib1g-dev vim default-jdk default-jre \
-      texinfo gengetopt libexpat1-dev libusb-dev libncurses5-dev cmake git \
-      device-tree-compiler python gawk autoconf
+    apt-get install -y wget git make autoconf gcc
 
-ENV RISCV=/opt/riscv
+RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" && \
+    bash Miniforge3-$(uname)-$(uname -m).sh -b -p conda
 
-ARG CHIPYARD_HASH=76b747dc846706e898090960b9bcb2c3105e9b81
-ARG GEMMINI_HASH=138e2c3a20f326f3c3510cdb934578de05f8192e
-ARG RISCV_ISA_SIM_HASH=34741e07bc6b56f1762ce579537948d58e28cd5a
+ENV PATH /root/conda/bin:$PATH
+
+RUN conda install -y -n base conda-libmamba-solver && \
+    conda config --set solver libmamba && \
+    conda install -y -n base conda-lock==1.4.0
 
 RUN git clone https://github.com/ucb-bar/chipyard.git && \
     cd chipyard && \
-    git checkout "$CHIPYARD_HASH" && \
-    git submodule update --init generators/gemmini toolchains/esp-tools/riscv-isa-sim && \
-    git -C toolchains/esp-tools/riscv-isa-sim checkout "$RISCV_ISA_SIM_HASH" && \
-    git -C generators/gemmini checkout "$GEMMINI_HASH" && \
-    git add . && \
-    ./scripts/build-toolchains.sh esp-tools --prefix "$RISCV" --ignore-qemu && \
-    cd .. && \
-    rm -rf chipyard
+    git checkout 1.9.1 && \
+    ./build-setup.sh riscv-tools -s 6 -s 7 -s 8 -s 9
+
+RUN cd chipyard &&\
+    source $(conda info --base)/etc/profile.d/conda.sh &&\
+    source env.sh &&\
+    cd generators/gemmini && \
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*" && \
+    git fetch && git checkout v0.7.1 && \
+    git submodule update --init --recursive && \
+    make -C software/libgemmini install && \
+    ./scripts/build-spike.sh
 
 ENV PATH $RISCV/bin:$PATH
 ENV LD_LIBRARY_PATH $RISCV/lib:$LD_LIBRARY_PATH
