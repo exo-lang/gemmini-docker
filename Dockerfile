@@ -32,7 +32,11 @@ RUN cd chipyard &&\
     git fetch && git checkout v0.7.1 && \
     git submodule update --init --recursive && \
     make -C software/libgemmini install && \
-    ./scripts/build-spike.sh
+    ./scripts/build-spike.sh && \
+    mkdir /opt/riscv/ ; mkdir /opt/riscv/bin ; mkdir /opt/riscv/lib && \
+    cp $RISCV/bin/* /opt/riscv/bin/ && \
+    cp -r $RISCV/lib/* /opt/riscv/lib/ && \
+    cd ../../.. ; rm -rf chipyard
 
-ENV PATH $RISCV/bin:$PATH
-ENV LD_LIBRARY_PATH $RISCV/lib:$LD_LIBRARY_PATH
+ENV PATH /opt/riscv/bin:$PATH
+ENV LD_LIBRARY_PATH /opt/riscv/lib:$LD_LIBRARY_PATH
