@@ -8,7 +8,7 @@ ENV TZ=US
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get -y update && \
-    apt-get install -y wget git make autoconf gcc
+    apt-get install -y wget git make autoconf gcc lsb-release
 
 RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" && \
     bash Miniforge3-$(uname)-$(uname -m).sh -b -p conda
