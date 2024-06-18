@@ -22,7 +22,7 @@ RUN conda install -y -n base conda-libmamba-solver && \
 RUN git clone https://github.com/ucb-bar/chipyard.git && \
     cd chipyard && \
     git checkout 1.9.1 && \
-    ./build-setup.sh riscv-tools -s 6 -s 7 -s 8 -s 9
+    ./build-setup.sh riscv-tools -s 4 -s 5 -s 6 -s 7 -s 8 -s 9
 
 RUN cd chipyard &&\
     source $(conda info --base)/etc/profile.d/conda.sh &&\
@@ -32,13 +32,7 @@ RUN cd chipyard &&\
     git fetch && git checkout v0.7.1 && \
     git submodule update --init --recursive && \
     make -C software/libgemmini install && \
-    ./scripts/build-spike.sh && \
-    mkdir /opt/riscv/ && \
-    cp -r $RISCV/* /opt/riscv/ && \
-    cp -r $RISCV/../* /opt/
+    ./scripts/build-spike.sh
 
-RUN rm -rf *
-
-ENV RISCV /opt/riscv/
-ENV PATH $RISCV/bin/:/opt/bin/:$PATH
-ENV LD_LIBRARY_PATH /opt/riscv/lib/:/opt/lib/:$LD_LIBRARY_PATH
+ENV PATH $RISCV/bin:$PATH
+ENV LD_LIBRARY_PATH $RISCV/lib:$LD_LIBRARY_PATH
