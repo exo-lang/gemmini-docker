@@ -31,4 +31,5 @@ RUN git clone https://github.com/ucb-bar/chipyard.git && \
     git submodule update --init --recursive && \
     ./scripts/build-spike.sh && \
     cd ../.. && \
-    find . -maxdepth 1 ! -name .conda-env -type d -not -path '.' -exec rm -rf {} +
+    rm -rf generators && \
+    rm -rf toolchains
