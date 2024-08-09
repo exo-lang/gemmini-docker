@@ -22,13 +22,13 @@ RUN conda install -y -n base conda-libmamba-solver && \
 RUN git clone https://github.com/ucb-bar/chipyard.git && \
     cd chipyard && \
     git checkout 1.9.1 && \
-    ./build-setup.sh riscv-tools -s 4 -s 5 -s 6 -s 7 -s 8 -s 9
-
-RUN cd chipyard &&\
+    ./build-setup.sh riscv-tools -s 4 -s 5 -s 6 -s 7 -s 8 -s 9 && \
     source $(conda info --base)/etc/profile.d/conda.sh &&\
     source env.sh &&\
     cd generators/gemmini && \
     git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*" && \
     git fetch && git checkout v0.7.1 && \
     git submodule update --init --recursive && \
-    ./scripts/build-spike.sh
+    ./scripts/build-spike.sh && \
+    cd ../.. && \
+    find . -maxdepth 1 ! -name .conda-env -type d -not -path '.' -exec rm -rf {} +
