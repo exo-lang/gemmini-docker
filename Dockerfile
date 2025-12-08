@@ -8,7 +8,9 @@ ENV TZ=US
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get -y update && \
-    apt-get install -y wget git make autoconf gcc lsb-release
+    apt-get install -y wget git make autoconf gcc lsb-release && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" && \
     bash Miniforge3-$(uname)-$(uname -m).sh -b -p conda
@@ -32,4 +34,8 @@ RUN git clone https://github.com/ucb-bar/chipyard.git && \
     ./scripts/build-spike.sh && \
     cd ../.. && \
     rm -rf generators && \
-    rm -rf toolchains
+    rm -rf toolchains && \
+    rm -rf .git && \
+    rm -rf tags && \
+    conda clean -afy && \
+    rm -rf /root/.cache /tmp/*
